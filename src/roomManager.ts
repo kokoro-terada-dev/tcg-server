@@ -1,7 +1,4 @@
-const rooms = new Map<
-  string,
-  string[]
->();
+const rooms = new Map<string, string[]>();
 
 export function createRoom(
   socketId: string

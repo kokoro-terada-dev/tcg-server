@@ -72,6 +72,32 @@ io.on("connection", (socket) => {
             );
         }
     );
+
+    socket.on(
+        "join-room",
+        (roomId: string) => {
+            const success =
+                joinRoom(
+                    roomId,
+                    socket.id
+                );
+
+            if (!success) {
+                socket.emit(
+                    "join-failed"
+                );
+
+                return;
+            }
+
+            socket.join(roomId);
+
+            io.to(roomId).emit(
+                "room-joined",
+                roomId
+            );
+        }
+    );
 });
 
 const PORT = process.env.PORT || 3000;
