@@ -18,6 +18,14 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   console.log("connected:", socket.id);
+
+  socket.emit("welcome", {
+    socketId: socket.id,
+  });
+
+  socket.on("disconnect", () => {
+    console.log("disconnected:", socket.id);
+  });
 });
 
 const PORT = process.env.PORT || 3000;
