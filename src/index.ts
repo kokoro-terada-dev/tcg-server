@@ -3,7 +3,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import {
     createRoom,
-    joinRoom
+    joinRoom,
+    setReady
 } from "./roomManager";
 
 const app = express();
@@ -96,6 +97,35 @@ io.on("connection", (socket) => {
                 "room-joined",
                 roomId
             );
+        }
+    );
+
+    socket.on(
+        "ready",
+        (roomId: string) => {
+            const state =
+                setReady(
+                    roomId,
+                    socket.id
+                );
+
+            if (!state) {
+                return;
+            }
+
+            io.to(roomId).emit(
+                "ready-state",
+                state
+            );
+
+            if (
+                state.player1Ready &&
+                state.player2Ready
+            ) {
+                io.to(roomId).emit(
+                    "game-start"
+                );
+            }
         }
     );
 });
